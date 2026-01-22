@@ -21,3 +21,10 @@ pwd_context = CryptContext(
 
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
