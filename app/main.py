@@ -4,7 +4,7 @@ from passlib.context import CryptContext
 from datetime import datetime, timedelta
 from jose import jwt
 from app.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
-
+from app.currnet_user import get_current_user
 from app.database import engine, SessionLocal
 from app.models import Base, User
 
@@ -14,7 +14,6 @@ app = FastAPI()
 @app.get("/")
 def root():
     return {"status": "ok"}
-
 
 pwd_context = CryptContext(
     schemes=["bcrypt"],
@@ -88,3 +87,10 @@ def login(email: str, password: str, db: Session = Depends(get_db)):
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
+
+@app.get("/me")
+def read_me(current_user: User = Depends(get_current_user)):
+    return {
+        "id": current_user.id,
+        "email": current_user.email
+    }
