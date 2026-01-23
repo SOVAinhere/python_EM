@@ -4,9 +4,9 @@ from passlib.context import CryptContext
 from datetime import datetime, timedelta
 from jose import jwt
 from app.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
-from app.currnet_user import get_current_user
-from app.database import engine, SessionLocal
-from app.models import Base, User
+from app.current_user import get_current_user
+from app.models import User
+from app.database_utils import get_db
 
 app = FastAPI()
 
@@ -14,6 +14,7 @@ app = FastAPI()
 @app.get("/")
 def root():
     return {"status": "ok"}
+
 
 pwd_context = CryptContext(
     schemes=["bcrypt"],
@@ -23,14 +24,6 @@ pwd_context = CryptContext(
 
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 
 @app.post("/signup")
@@ -87,6 +80,7 @@ def login(email: str, password: str, db: Session = Depends(get_db)):
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
+
 
 @app.get("/me")
 def read_me(current_user: User = Depends(get_current_user)):
