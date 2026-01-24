@@ -148,7 +148,7 @@ def delete_account(db: Session = Depends(get_db), current_user: User = Depends(g
 
 @app.post("/logout")
 def logout():
-    return {"detail": "Успешный выход (удалите токен на клиенте)"}
+    return {"detail": "Успешный выход"}
 
 
 @app.get("/admin/rules", dependencies=[check_permission("edit_rules")])
