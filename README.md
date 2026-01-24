@@ -87,11 +87,12 @@ http://127.0.0.1:8000/docs
 
 
 **Mock-система прав**
+```python
 ROLES_PERMISSIONS = {
     "admin": ["all_access", "edit_rules"],
     "user": ["view_own_profile"]
 }
-
+```
 
 
 **Проверка прав доступа**
